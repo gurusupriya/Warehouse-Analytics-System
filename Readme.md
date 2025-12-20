@@ -79,6 +79,13 @@ To set up the required tools and prepare your environment for this project, plea
 
 The guide also explains how to configure the necessary environment variables, create database connections, and prepare your system for running the DAGs smoothly. Make sure to follow the installation document before moving ahead with the workflow execution.
 
+### Clone the Repository
+
+To get started, first clone the project:
+
+`git clone https://github.com/reddy-uda/Grocery-Store-Inventory-Management-System-using-Airflow-and-Pyspark.git`
+
+`cd Grocery-Store-Inventory-Management-System-using-Airflow-and-Pyspark`
 
 ## **Airflow Folder Overview**
 
@@ -96,6 +103,31 @@ These files control how data flows through the pipeline.
 
 **PostgreSQL Database Schema:**
 ![DataBase](https://raw.githubusercontent.com/reddy-uda/Grocery-Store-Inventory-Management-System-using-Airflow-and-Pyspark/master/images/Database.png)
+
+The PostgreSQL database is built to keep the system fast, organized, and easy to analyze.
+Each table has a clear purpose, and together they make it simple to track products, stock levels, and sales activity across the store.
+
+Main tables represention:
+
+**products** – Contains all essential details about each item the store sells, including the product name, SKU, category, cost, selling price, and other attributes.
+
+**suppliers** – Holds the list of suppliers along with their contact information. Each supplier can be linked to one or more products.
+
+**warehouses** – Represents the different storage locations where inventory is maintained. Each warehouse is connected to a specific physical location.
+
+**inventory** – Represents the different storage locations where inventory is maintained. Each warehouse is connected to a specific physical location.
+
+**product_sales** – Represents the different storage locations where inventory is maintained. Each warehouse is connected to a specific physical location.
+
+This structure helps the system perform several important tasks:
+
+- Identifying products that are running low
+
+- Understanding how long items have been sitting in storage
+
+- Comparing performance across warehouses
+
+- Studying sales trends over different periods
 
 **docker-compose.yml**
 
@@ -174,7 +206,7 @@ The PySpark processing scripts are stored inside the project:
 
 `PySpark/powerbi.py`
 
-These scripts can be triggered through an Airflow DAG or run manually during development. Each script connects to PostgreSQL using JDBC and loads the required raw tables into Spark DataFrames.
+These scripts are triggered through an Airflow DAG or run manually during development. Each script connects to PostgreSQL using JDBC and loads the required raw tables into Spark DataFrames.
 
 Inside the PySpark scripts, the following operations take place:
 
@@ -189,6 +221,7 @@ Inside the PySpark scripts, the following operations take place:
 * Creating optimized analytics tables specifically designed for Power BI dashboards
 
 Once the transformations are complete, PySpark writes the final processed results back into PostgreSQL, storing them in dedicated analytics tables that Power BI can read directly.
+These scripts run directly in PyCharm by updating the JDBC driver path and PostgreSQL connection details according to your local system.
 
 ## **Power BI Integration**
 
@@ -217,4 +250,18 @@ The project also includes a simple web application that allows inventory and sal
 Once a manager creates an account and logs in, they are taken to a dedicated page where the embedded Power BI dashboard is displayed. This makes it easy for users to view inventory trends, sales performance, low-stock alerts, and other key metrics directly from the browser without needing to open Power BI Desktop.
 
 The web app acts as a front-end layer that combines authentication, user access control, and data visualization. This setup provides a convenient and centralized place for operational teams to monitor the real-time output of the data pipeline.
+
+### Low-Stock Email Alerts
+
+The web application includes an automated low-stock alert system.  
+Whenever PySpark detects that a product's stock quantity falls below the defined threshold, that product is inserted into a **low_stock_alerts** table in PostgreSQL.  
+The web application reads this table and automatically sends an email notification to the Inventory Manager, including:
+
+- Product name  
+- Current quantity  
+- Threshold quantity  
+- Warehouse location  
+
+This ensures that managers receive immediate alerts and can restock items before they run out.
+
 
