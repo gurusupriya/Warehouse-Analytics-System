@@ -83,5 +83,5 @@ After setting everything up, verify each tool:
 
 `astro version`
 
-If all commands run successfully, your environment is ready to start the program
+If all commands run successfully, your environment is ready to start the program.
 
